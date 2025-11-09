@@ -13,8 +13,8 @@ pub fn main() !void {
     // Create two new UUIDv7
     // The new function will automatically choose a PRNg for you.
     // If you want to provide your own PRNg, check out `v7.new2()`.
-    const id1 = uuid.v7.new();
-    const id2 = uuid.v7.new();
+    const id1 = try uuid.v7.new();
+    const id2 = try uuid.v7.new();
 
     // The generated UUIDs are just two `u128`s. To translate
     // them into a human readable URNs, we use the serialize
