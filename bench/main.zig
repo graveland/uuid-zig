@@ -3,7 +3,11 @@ const uuid = @import("uuid-zig");
 
 pub fn main() !void {
     var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
     const allocator = gpa.allocator();
+    var threaded = std.Io.Threaded.init(allocator);
+    defer threaded.deinit();
+    const io = threaded.io();
 
     var stdout_buffer: [1024]u8 = undefined;
     var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
@@ -40,7 +44,7 @@ pub fn main() !void {
             var timer = try std.time.Timer.start();
 
             while (i < iterations) : (i += 1) {
-                const id = uuid.v7.new();
+                const id = uuid.v7.new(io);
                 std.mem.doNotOptimizeAway(id);
             }
 

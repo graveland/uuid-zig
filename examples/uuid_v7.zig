@@ -10,11 +10,18 @@ var stdout_writer = std.fs.File.stdout().writer(&stdout_buffer);
 const stdout = &stdout_writer.interface;
 
 pub fn main() !void {
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer _ = gpa.deinit();
+    const allocator = gpa.allocator();
+    var threaded = std.Io.Threaded.init(allocator);
+    defer threaded.deinit();
+    const io = threaded.io();
+
     // Create two new UUIDv7
     // The new function will automatically choose a PRNg for you.
     // If you want to provide your own PRNg, check out `v7.new2()`.
-    const id1 = try uuid.v7.new();
-    const id2 = try uuid.v7.new();
+    const id1 = try uuid.v7.new(io);
+    const id2 = try uuid.v7.new(io);
 
     // The generated UUIDs are just two `u128`s. To translate
     // them into a human readable URNs, we use the serialize
