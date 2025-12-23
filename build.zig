@@ -27,7 +27,7 @@ pub fn build(b: *std.Build) !void {
         .version = try std.SemanticVersion.parse(zon.version),
     });
 
-    lib.linkLibC();
+    lib.root_module.link_libc = true;
 
     lib.installHeader(b.path("src/uuid.h"), "uuid.h");
 
@@ -74,7 +74,7 @@ pub fn build(b: *std.Build) !void {
         .root_module = cexample_mod,
     });
 
-    cexample_exe.linkLibC();
+    cexample_exe.root_module.link_libc = true;
 
     cexample_exe.linkLibrary(lib);
 
