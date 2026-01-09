@@ -76,7 +76,7 @@ pub fn build(b: *std.Build) !void {
 
     cexample_exe.root_module.link_libc = true;
 
-    cexample_exe.linkLibrary(lib);
+    cexample_exe.root_module.linkLibrary(lib);
 
     b.installArtifact(cexample_exe);
 }
