@@ -2,7 +2,6 @@ const std = @import("std");
 const core = @import("core.zig");
 
 const Uuid = core.Uuid;
-const rand = std.crypto.random;
 const time = std.time;
 
 /// Create a time-based version 7 UUID
@@ -43,7 +42,8 @@ pub fn new2(r: std.Random, millis: i64) Uuid {
 
 pub fn new(io: std.Io) !Uuid {
     const now = try std.Io.Clock.Timestamp.now(io, .real);
-    return new2(rand, @intCast(@divTrunc(now.raw.toNanoseconds(), std.time.ns_per_ms)));
+    var io_source: std.Random.IoSource = .{ .io = io };
+    return new2(io_source.interface(), @intCast(@divTrunc(now.raw.toNanoseconds(), std.time.ns_per_ms)));
 }
 
 test "create a version 7 UUID" {
