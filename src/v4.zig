@@ -2,7 +2,6 @@ const std = @import("std");
 const core = @import("core.zig");
 
 const Uuid = core.Uuid;
-const rand = std.crypto.random;
 
 /// Create a version 4 UUID using a user provided RNG
 pub fn new2(r: std.Random) Uuid {
@@ -17,17 +16,18 @@ pub fn new2(r: std.Random) Uuid {
     return uuid;
 }
 
-/// Create a version 4 UUID using the default CSPRNG
-pub fn new() Uuid {
-    return new2(rand);
+/// Create a version 4 UUID using io-backed random
+pub fn new(io: std.Io) Uuid {
+    var io_source: std.Random.IoSource = .{ .io = io };
+    return new2(io_source.interface());
 }
 
 test "create a version 4 UUID" {
-    const uuid1 = new();
+    const uuid1 = new(std.testing.io);
     try std.testing.expectEqual(core.Version.random, core.version(uuid1));
     try std.testing.expectEqual(core.Variant.rfc4122, core.variant(uuid1));
 
-    const uuid2 = new();
+    const uuid2 = new(std.testing.io);
     try std.testing.expectEqual(core.Version.random, core.version(uuid2));
     try std.testing.expectEqual(core.Variant.rfc4122, core.variant(uuid2));
 
