@@ -40,18 +40,18 @@ pub fn new2(r: std.Random, millis: i64) Uuid {
     return uuid;
 }
 
-pub fn new(io: std.Io) !Uuid {
-    const now = try std.Io.Clock.Timestamp.now(io, .real);
+pub fn new(io: std.Io) Uuid {
+    const now = std.Io.Clock.Timestamp.now(io, .real);
     var io_source: std.Random.IoSource = .{ .io = io };
     return new2(io_source.interface(), @intCast(@divTrunc(now.raw.toNanoseconds(), std.time.ns_per_ms)));
 }
 
 test "create a version 7 UUID" {
-    const uuid1 = try new(std.testing.io);
+    const uuid1 = new(std.testing.io);
     try std.testing.expectEqual(core.Version.time_based_epoch, core.version(uuid1));
     try std.testing.expectEqual(core.Variant.rfc4122, core.variant(uuid1));
 
-    const uuid2 = try new(std.testing.io);
+    const uuid2 = new(std.testing.io);
     try std.testing.expectEqual(core.Version.time_based_epoch, core.version(uuid2));
     try std.testing.expectEqual(core.Variant.rfc4122, core.variant(uuid2));
 

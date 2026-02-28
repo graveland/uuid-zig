@@ -123,6 +123,7 @@ const Zon = struct {
     name: enum { uuid },
     version: []const u8,
     fingerprint: usize,
+    minimum_zig_version: ?[]const u8 = null,
     // TODO same goes for the dependencies
     dependencies: struct {},
     paths: []const []const u8,
